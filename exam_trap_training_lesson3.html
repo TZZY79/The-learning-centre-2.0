@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Trap Training 🛡️ Lesson 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A1628;
+    --blue: #1565C0;
+    --sky: #42A5F5;
+    --gold: #FFD600;
+    --coral: #FF5252;
+    --green: #00E676;
+    --white: #FFFFFF;
+    --light: #E3F2FD;
+    --gray: #90A4AE;
+    --purple: #7C4DFF;
+    --orange: #FF6D00;
+    --red: #D50000;
+    --teal: #00BCD4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* ===== SLIDE SYSTEM ===== */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    padding: 36px 48px;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* ===== NAVIGATION ===== */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+    background: rgba(255,255,255,0.08);
+    padding: 10px 20px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav button {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 50px;
+    padding: 8px 22px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nav button:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(255,214,0,0.4); }
+  .nav button:disabled { background: var(--gray); cursor: default; transform: none; box-shadow: none; }
+  #slideCounter { display: flex; align-items: center; color: var(--white); font-weight: 700; font-size: 14px; min-width: 60px; justify-content: center; }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--coral), var(--gold));
+    transition: width 0.4s ease;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(255,82,82,0.5);
+  }
+
+  /* ===== SLIDE LABEL ===== */
+  .slide-label {
+    position: fixed;
+    top: 14px; right: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    font-family: 'Space Mono', monospace;
+    z-index: 100;
+  }
+
+  /* ===== LESSON TAG ===== */
+  .lesson-badge {
+    position: fixed;
+    top: 14px; left: 20px;
+    font-size: 11px;
+    color: rgba(255,82,82,0.8);
+    font-family: 'Space Mono', monospace;
+    z-index: 100;
+    background: rgba(255,82,82,0.1);
+    border: 1px solid rgba(255,82,82,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.4); } 70% { transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes slideLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+  @keyframes wordReveal { from { opacity: 0; transform: translateY(15px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes drawLine { from { width: 0; } to { width: 100%; } }
+  @keyframes slamIn { 0% { opacity: 0; transform: scale(3) rotate(-15deg); } 60% { transform: scale(0.9) rotate(5deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+  @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 10px rgba(255,214,0,0.3); } 50% { box-shadow: 0 0 30px rgba(255,214,0,0.8); } }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
+  @keyframes strikethrough { from { width: 0; } to { width: 100%; } }
+  @keyframes healthDrain { from { width: 100%; } to { width: 20%; } }
+  @keyframes countdown { 0%{content:"30"} 100%{content:"0"} }
+  @keyframes timerTick { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 283; } }
+
+  .anim-up { animation: fadeUp 0.6s ease forwards; }
+  .anim-bounce { animation: bounceIn 0.7s ease forwards; }
+  .anim-left { animation: slideLeft 0.5s ease forwards; }
+  .anim-right { animation: slideRight 0.5s ease forwards; }
+  .anim-fade { animation: fadeIn 0.8s ease forwards; }
+  .anim-slam { animation: slamIn 0.5s ease forwards; }
+
+  .delay-1 { animation-delay: 0.2s; opacity: 0; }
+  .delay-2 { animation-delay: 0.4s; opacity: 0; }
+  .delay-3 { animation-delay: 0.6s; opacity: 0; }
+  .delay-4 { animation-delay: 0.8s; opacity: 0; }
+  .delay-5 { animation-delay: 1.0s; opacity: 0; }
+  .delay-6 { animation-delay: 1.2s; opacity: 0; }
+  .delay-7 { animation-delay: 1.4s; opacity: 0; }
+  .delay-8 { animation-delay: 1.6s; opacity: 0; }
+
+  .float-anim { animation: float 3s ease-in-out infinite; }
+
+  /* ===== SHARED ELEMENTS ===== */
+  .section-tag {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--coral);
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Space Mono', monospace;
+  }
+  .slide-title {
+    font-size: clamp(26px, 3.8vw, 46px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 24px;
+  }
+  .big-emoji {
+    font-size: 70px;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    animation: bounceIn 0.6s ease, float 3s ease-in-out 0.6s infinite;
+  }
+  .statement-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px 36px;
+    max-width: 720px;
+    width: 100%;
+  }
+  .highlight-gold { color: var(--gold); }
+  .highlight-green { color: var(--green); }
+  .highlight-coral { color: var(--coral); }
+
+  /* ===== BG VARIANTS ===== */
+  .bg-red { background: radial-gradient(ellipse at top, #200808, #0A1628 65%); }
+  .bg-blue { background: radial-gradient(ellipse at top left, #0D2540, #0A1628 65%); }
+  .bg-purple { background: radial-gradient(ellipse at top right, #1A0D2E, #0A1628 65%); }
+  .bg-green { background: radial-gradient(ellipse at bottom, #071A10, #0A1628 65%); }
+  .bg-gold { background: radial-gradient(ellipse at center, #1A1400, #0A1628 65%); }
+  .bg-teal { background: radial-gradient(ellipse at bottom right, #001A1F, #0A1628 65%); }
+  .bg-dark { background: radial-gradient(ellipse at center, #0D0D1A, #060610 65%); }
+
+  /* ===== PARTICLES ===== */
+  .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; opacity: 0.05; animation: float 4s ease-in-out infinite; }
+
+  /* ===== SLIDE 1 — TITLE ===== */
+  .title-main {
+    font-size: clamp(36px, 6vw, 70px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--coral) 0%, #FFF 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200%;
+    animation: fadeUp 0.8s ease forwards, shimmer 3s linear 1s infinite;
+  }
+  .tag-pill {
+    display: inline-block;
+    background: rgba(255,82,82,0.12);
+    border: 1px solid rgba(255,82,82,0.35);
+    color: var(--coral);
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 5px 4px;
+  }
+
+  /* ===== SLIDE 2 — EXAMINER MINDSET ===== */
+  .fox-card {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,82,82,0.25);
+    border-radius: 20px;
+    padding: 30px 40px;
+    max-width: 680px;
+    width: 100%;
+    text-align: center;
+  }
+  .fox-quote {
+    font-size: clamp(18px, 2.8vw, 26px);
+    font-weight: 800;
+    line-height: 1.5;
+    font-style: italic;
+    color: rgba(255,255,255,0.9);
+    border-left: 4px solid var(--coral);
+    padding-left: 20px;
+    text-align: left;
+    margin: 16px 0;
+  }
+  .teacher-script {
+    background: rgba(255,214,0,0.08);
+    border: 1px solid rgba(255,214,0,0.25);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    text-align: left;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+  .teacher-script strong { color: var(--gold); }
+
+  /* ===== TRAP BANNER ===== */
+  .trap-banner {
+    background: linear-gradient(135deg, rgba(213,0,0,0.3), rgba(213,0,0,0.1));
+    border: 2px solid rgba(213,0,0,0.5);
+    border-radius: 14px;
+    padding: 10px 28px;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--coral);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 16px;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+
+  /* ===== SLIDE 3 — TAG FAKEOUT ===== */
+  .tag-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 700px;
+    width: 100%;
+  }
+  .sentence-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 16px 22px;
+  }
+  .sentence-row.wrong { border: 2px solid rgba(255,82,82,0.4); }
+  .sentence-row.right { border: 2px solid rgba(0,230,118,0.4); }
+  .sentence-badge {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 4px 10px;
+    flex-shrink: 0;
+  }
+  .badge-trap { background: rgba(255,82,82,0.2); color: var(--coral); }
+  .badge-safe { background: rgba(0,230,118,0.2); color: var(--green); }
+  .sentence-text {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .wrong-word {
+    text-decoration: line-through;
+    color: var(--coral);
+    position: relative;
+  }
+  .correct-word {
+    color: var(--gold);
+    font-style: italic;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  .sentence-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* ===== SLAM EFFECT ===== */
+  .slam-box {
+    position: relative;
+    display: inline-block;
+  }
+  .x-stamp {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    color: var(--coral);
+    opacity: 0;
+    font-weight: 900;
+    text-shadow: 0 0 20px rgba(255,82,82,0.8);
+  }
+  .x-stamp.visible { animation: slamIn 0.4s ease forwards; }
+
+  /* ===== WARNING BOX ===== */
+  .warning-box {
+    background: rgba(213,0,0,0.12);
+    border: 2px solid rgba(213,0,0,0.4);
+    border-radius: 14px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 700px;
+    width: 100%;
+    margin-top: 12px;
+  }
+  .warning-icon { font-size: 28px; flex-shrink: 0; }
+  .warning-text { font-size: 15px; font-weight: 700; line-height: 1.6; }
+  .warning-sub { font-size: 13px; opacity: 0.7; margin-top: 4px; font-family: 'Space Mono', monospace; }
+
+  /* ===== EVERYBODY TRAP ===== */
+  .everybody-demo {
+    background: rgba(124,77,255,0.1);
+    border: 2px solid rgba(124,77,255,0.3);
+    border-radius: 16px;
+    padding: 20px 28px;
+    max-width: 700px;
+    width: 100%;
+    margin-top: 12px;
+  }
+  .demo-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #B39DDB; font-weight: 700; margin-bottom: 10px; font-family: 'Space Mono', monospace; }
+  .demo-sentence { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+  .demo-note { font-size: 14px; opacity: 0.75; line-height: 1.6; }
+
+  /* ===== SLIDE 4 — PASSIVE LOGIC TRAP ===== */
+  .sandwich-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+    max-width: 760px;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  .sandwich-card {
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+  }
+  .sandwich-card.correct {
+    background: rgba(0,230,118,0.1);
+    border: 2px solid rgba(0,230,118,0.3);
+  }
+  .sandwich-card.wrong {
+    background: rgba(255,82,82,0.1);
+    border: 2px solid rgba(255,82,82,0.3);
+  }
+  .sandwich-emoji { font-size: 44px; margin-bottom: 10px; display: block; }
+  .sandwich-label { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+  .sandwich-sentence { font-size: 14px; opacity: 0.75; line-height: 1.5; }
+  .vs-divider { font-size: 28px; font-weight: 900; color: var(--gray); text-align: center; }
+
+  .by-spotlight {
+    display: inline-block;
+    background: rgba(255,214,0,0.2);
+    border: 2px solid rgba(255,214,0,0.5);
+    border-radius: 8px;
+    padding: 2px 10px;
+    color: var(--gold);
+    font-weight: 900;
+    animation: glowPulse 1.5s ease-in-out infinite;
+  }
+
+  .passive-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 680px;
+    width: 100%;
+  }
+  .p-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 14px 20px;
+    opacity: 0;
+  }
+  .p-step-num {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    color: var(--navy);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .p-step-text { font-size: 16px; font-weight: 700; }
+
+  /* ===== SLIDE 5 — MIRROR WORDS ===== */
+  .mirror-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 780px;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+  .mirror-col {
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .mirror-col.text-side {
+    background: rgba(66,165,245,0.08);
+    border: 2px solid rgba(66,165,245,0.25);
+  }
+  .mirror-col.question-side {
+    background: rgba(255,109,0,0.08);
+    border: 2px solid rgba(255,109,0,0.25);
+  }
+  .mirror-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; font-family: 'Space Mono', monospace; }
+  .mirror-body { font-size: 14px; line-height: 1.7; opacity: 0.85; }
+  .mirror-highlight {
+    display: inline;
+    background: rgba(255,82,82,0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--coral);
+    font-weight: 800;
+  }
+  .mirror-highlight.gold {
+    background: rgba(255,214,0,0.2);
+    color: var(--gold);
+  }
+  .answer-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .choice {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .choice.trap { background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.3); }
+  .choice.correct { background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.3); }
+  .choice-letter { font-family: 'Space Mono', monospace; font-size: 12px; opacity: 0.6; }
+
+  .not-trap-box {
+    background: rgba(255,82,82,0.1);
+    border: 2px solid rgba(255,82,82,0.3);
+    border-radius: 14px;
+    padding: 16px 22px;
+    max-width: 780px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* ===== SLIDE 6 — WORKSHEET ===== */
+  .ws-table {
+    width: 100%;
+    max-width: 780px;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+  }
+  .ws-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    padding: 6px 14px;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+  }
+  .ws-table td {
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.04);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .ws-table td:first-child { border-radius: 10px 0 0 10px; }
+  .ws-table td:last-child { border-radius: 0 10px 10px 0; }
+  .ws-trap { color: var(--coral); font-weight: 900; font-size: 13px; }
+  .ws-safe { color: var(--green); font-weight: 900; font-size: 13px; }
+
+  /* ===== SLIDE 7 — BOSS LEVEL ===== */
+  .health-bar-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  .health-bar-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+  }
+  .health-bar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 50px;
+    height: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .health-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #D50000, #FF5252);
+    box-shadow: 0 0 15px rgba(213,0,0,0.5);
+    transition: width 2s ease;
+  }
+
+  .boss-sentence {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,214,0,0.3);
+    border-radius: 16px;
+    padding: 24px 32px;
+    max-width: 720px;
+    width: 100%;
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .boss-sentence .error { color: var(--coral); text-decoration: underline wavy rgba(255,82,82,0.6); }
+
+  .timer-ring-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .timer-svg { transform: rotate(-90deg); }
+  .timer-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+  .timer-circle {
+    fill: none;
+    stroke: var(--coral);
+    stroke-width: 6;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.1s linear;
+  }
+  .timer-number {
+    position: absolute;
+    font-size: 36px;
+    font-weight: 900;
+    font-family: 'Space Mono', monospace;
+    color: var(--white);
+  }
+
+  .error-cards {
+    display: flex;
+    gap: 14px;
+    max-width: 720px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .error-reveal {
+    background: rgba(255,82,82,0.12);
+    border: 2px solid rgba(255,82,82,0.3);
+    border-radius: 14px;
+    padding: 16px 22px;
+    flex: 1;
+    min-width: 200px;
+    opacity: 0;
+  }
+  .error-reveal-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--coral); font-weight: 700; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+  .error-reveal-text { font-size: 15px; font-weight: 700; line-height: 1.6; }
+
+  /* ===== SLIDE 8 — FINAL CLOSE ===== */
+  .close-quote {
+    font-size: clamp(18px, 2.8vw, 28px);
+    font-weight: 800;
+    line-height: 1.5;
+    text-align: center;
+    max-width: 700px;
+    font-style: italic;
+  }
+  .mindset-equation {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: clamp(18px, 3vw, 36px);
+    font-weight: 900;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .eq-box {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 22px;
+    text-align: center;
+  }
+  .eq-op { color: var(--gold); font-size: 1.2em; }
+  .eq-result {
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== TRAP HUNTER TITLE ===== */
+  .trap-hunter-title {
+    font-size: clamp(24px, 4vw, 52px);
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(135deg, var(--coral), var(--gold), var(--white));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200%;
+    animation: fadeUp 0.8s ease forwards, shimmer 3s linear 1s infinite;
+  }
+
+  /* ===== TEACHER TIP ===== */
+  .teacher-tip {
+    background: rgba(255,214,0,0.07);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 20px;
+    max-width: 720px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+    margin-top: 12px;
+  }
+  .teacher-tip strong { color: var(--gold); }
+
+  /* ===== FORMULA BOX ===== */
+  .formula-box {
+    background: linear-gradient(135deg, rgba(21,101,192,0.25), rgba(21,101,192,0.08));
+    border: 2px solid rgba(66,165,245,0.35);
+    border-radius: 20px;
+    padding: 24px 32px;
+    max-width: 680px;
+    width: 100%;
+  }
+  .formula-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--sky);
+    font-weight: 700;
+    margin-bottom: 14px;
+    font-family: 'Space Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="slide-label" id="slideLabel">SLIDE 01 / 08</div>
+<div class="lesson-badge">⚔️ LESSON 3</div>
+
+<!-- ============================= -->
+<!-- SLIDE 1 — TITLE               -->
+<!-- ============================= -->
+<div class="slide active" id="s1">
+  <div class="particles">
+    <div class="particle" style="width:220px;height:220px;background:#FF5252;top:-60px;right:-60px;animation-delay:0s"></div>
+    <div class="particle" style="width:160px;height:160px;background:#FFD600;bottom:-40px;left:-40px;animation-delay:1.5s"></div>
+    <div class="particle" style="width:100px;height:100px;background:#7C4DFF;top:40%;left:5%;animation-delay:0.8s"></div>
+  </div>
+  <div class="big-emoji anim-bounce">🛡️</div>
+  <div class="trap-hunter-title delay-1">EXAM TRAP TRAINING</div>
+  <p class="anim-up delay-2" style="font-size:clamp(14px,2vw,20px);color:var(--gray);margin-top:12px;text-align:center;letter-spacing:2px;text-transform:uppercase">See the trap. Beat the trap. Pass the exam.</p>
+  <div class="anim-up delay-3" style="margin-top:22px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px">
+    <span class="tag-pill">🎭 Examiner's Mindset</span>
+    <span class="tag-pill">🏷️ Tag Fake-Out</span>
+    <span class="tag-pill">🔄 Passive Logic</span>
+    <span class="tag-pill">🪞 Mirror Words</span>
+    <span class="tag-pill">🎮 Boss Battle</span>
+  </div>
+  <p class="anim-up delay-4" style="margin-top:24px;color:rgba(255,255,255,0.3);font-size:13px;letter-spacing:1px">GEP 10 • Blueprint 4 • Lesson 3 • 90 Minutes</p>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 2 — EXAMINER MINDSET    -->
+<!-- ============================= -->
+<div class="slide bg-red" id="s2">
+  <div class="section-tag anim-up">🎭 Part 1 — The Examiner's Mindset</div>
+  <div class="slide-title anim-up delay-1">They Are Testing Your <span class="highlight-gold">Focus</span> 🔍</div>
+  <div class="fox-card anim-up delay-2">
+    <p style="font-size:40px;text-align:center;margin-bottom:12px" class="float-anim">🦊</p>
+    <div class="fox-quote anim-up delay-3">
+      "They aren't testing your English.<br>They are testing your <span class="highlight-gold">focus</span>." ✨
+    </div>
+    <div class="teacher-script anim-up delay-4">
+      <strong>🎙️ Teacher says:</strong> "Examiners aren't your friends. Their job is to find out who is <span style="color:var(--coral)">guessing</span> and who actually <span style="color:var(--green)">knows the rules</span>. Today, we learn to spot the traps <strong>before</strong> you step in them."
+    </div>
+  </div>
+  <div class="anim-up delay-5" style="margin-top:16px;display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
+    <div style="text-align:center"><p style="font-size:32px">😰</p><p style="font-size:13px;opacity:0.6;margin-top:4px">Panics + guesses</p></div>
+    <div style="text-align:center;color:var(--coral)"><p style="font-size:32px">VS</p></div>
+    <div style="text-align:center"><p style="font-size:32px">😎</p><p style="font-size:13px;opacity:0.6;margin-top:4px">Spots the trap</p></div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 3 — TAG QUESTION FAKEOUT -->
+<!-- ============================= -->
+<div class="slide bg-purple" id="s3">
+  <div class="anim-up" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <div class="trap-banner">⚠️ TRAP #1</div>
+  </div>
+  <div class="slide-title anim-up delay-1">The Tag Question <span class="highlight-coral">Fake-Out</span> 🏷️</div>
+  <div class="tag-comparison">
+
+    <div class="sentence-row wrong anim-left delay-2">
+      <div class="sentence-icon">❌</div>
+      <div class="sentence-badge badge-trap">TRAP</div>
+      <div class="sentence-text">I am late, <span class="wrong-word">am I not</span>? &nbsp;<span style="font-size:13px;color:rgba(255,255,255,0.4)">(❌ "amn't" doesn't exist!)</span></div>
+    </div>
+
+    <div class="sentence-row right anim-left delay-3">
+      <div class="sentence-icon">✅</div>
+      <div class="sentence-badge badge-safe">SAFE</div>
+      <div class="sentence-text">I am late, <span class="correct-word">aren't I</span>? &nbsp;<span style="font-size:13px;color:var(--green)">← Always use "aren't I" for "I am"</span></div>
+    </div>
+
+    <div class="everybody-demo anim-up delay-4">
+      <div class="demo-title">🪤 The Hidden Subject Trap</div>
+      <div class="demo-sentence">Everybody likes pizza, <span class="correct-word">don't they?</span></div>
+      <div class="demo-note">
+        💡 <span style="color:var(--gold)">"Everybody", "Everyone", "Nobody"</span> look singular but they take a <strong>plural tag</strong>!<br>
+        <span style="color:rgba(255,255,255,0.5)">They → don't they / aren't they</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="teacher-tip anim-up delay-5">
+    <strong>🎙️ Teacher asks:</strong> "What is the subject here? What is the verb? Positive or negative?" — Never give the answer. Make them use the formula! 🔑
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 4 — PASSIVE LOGIC TRAP  -->
+<!-- ============================= -->
+<div class="slide bg-teal" id="s4">
+  <div class="trap-banner anim-up" style="border-color:rgba(0,188,212,0.5);color:var(--teal)">⚠️ TRAP #2</div>
+  <div class="slide-title anim-up delay-1">The Passive <span style="color:var(--teal)">"Logic"</span> Trap 🔄</div>
+
+  <div class="sandwich-grid anim-fade delay-2">
+    <div class="sandwich-card correct">
+      <span class="sandwich-emoji">🧑</span>
+      <div class="sandwich-label" style="color:var(--green)">✅ Makes Sense</div>
+      <div class="sandwich-sentence">The sandwich was eaten <span class="by-spotlight">by</span> the boy.<br><span style="font-size:12px;opacity:0.6">Arrow: boy → sandwich ✅</span></div>
+    </div>
+    <div class="vs-divider">VS</div>
+    <div class="sandwich-card wrong">
+      <span class="sandwich-emoji">🥪</span>
+      <div class="sandwich-label" style="color:var(--coral)">❌ Trap Sentence</div>
+      <div class="sandwich-sentence">The mistake was corrected <span style="color:var(--coral);font-weight:900">the teacher.</span><br><span style="font-size:12px;opacity:0.6">Missing "by"! ❌</span></div>
+    </div>
+  </div>
+
+  <div class="passive-steps">
+    <div class="p-step anim-up delay-3">
+      <div class="p-step-num">1</div>
+      <div class="p-step-text">🔍 Look for the word <span class="by-spotlight">BY</span> in the sentence</div>
+    </div>
+    <div class="p-step anim-up delay-4">
+      <div class="p-step-num">2</div>
+      <div class="p-step-text">❓ No "by"? Ask: <em style="color:var(--gold)">"Does the logic make sense?"</em></div>
+    </div>
+    <div class="p-step anim-up delay-5">
+      <div class="p-step-num">3</div>
+      <div class="p-step-text">✅ Passive formula = <span style="color:var(--sky)">was/were + past participle + by + agent</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 5 — MIRROR WORDS        -->
+<!-- ============================= -->
+<div class="slide bg-blue" id="s5">
+  <div class="trap-banner anim-up">⚠️ TRAP #3</div>
+  <div class="slide-title anim-up delay-1">Reading <span class="highlight-coral">"Mirror Words"</span> 🪞</div>
+
+  <div class="mirror-grid anim-fade delay-2">
+    <div class="mirror-col text-side">
+      <div class="mirror-label" style="color:var(--sky)">📖 The Paragraph</div>
+      <div class="mirror-body">
+        The students were <span class="mirror-highlight">exhausted</span> after the long exam. They worked hard all morning and needed rest before lunch.
+      </div>
+    </div>
+    <div class="mirror-col question-side">
+      <div class="mirror-label" style="color:#FFAB40">❓ The Question</div>
+      <div class="mirror-body">How did the students feel after the exam?</div>
+      <div class="answer-choices">
+        <div class="choice trap anim-left delay-3">
+          <span class="choice-letter">A</span>
+          <span>😴 They were <span class="mirror-highlight">exhausted</span> and went home.</span>
+          <span style="font-size:16px">🪤</span>
+        </div>
+        <div class="choice correct anim-left delay-4">
+          <span class="choice-letter">B</span>
+          <span>😓 They felt tired and needed rest.</span>
+          <span style="font-size:16px">✅</span>
+        </div>
+      </div>
+      <div style="font-size:12px;margin-top:10px;color:var(--coral);opacity:0.8">⚠️ A uses the exact word from text but adds wrong info!</div>
+    </div>
+  </div>
+
+  <div class="not-trap-box anim-up delay-5">
+    <span style="font-size:28px">🚨</span>
+    <div>
+      <div style="font-weight:800;margin-bottom:4px">The <span style="color:var(--coral)">"NOT"</span> Trap</div>
+      <div style="font-size:14px;opacity:0.75">Questions like <em>"Which is <span style="color:var(--coral)">NOT</span> true?"</em> flip the rules. Slow down — you are looking for the WRONG answer, not the right one!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 6 — TRAP HUNTER WORKSHEET -->
+<!-- ============================= -->
+<div class="slide bg-dark" id="s6">
+  <div class="section-tag anim-up">🕵️ Trap Hunter Worksheet</div>
+  <div class="slide-title anim-up delay-1">Spot the Lie! 🔎</div>
+  <table class="ws-table anim-up delay-2">
+    <tr>
+      <th>Sentence</th>
+      <th>Trap or Safe?</th>
+      <th>The Reason</th>
+    </tr>
+    <tr class="anim-up delay-2">
+      <td>I am a student, <em>am I not?</em></td>
+      <td><span class="ws-trap">⚠️ TRAP</span></td>
+      <td>Should be "aren't I?"</td>
+    </tr>
+    <tr class="anim-up delay-3">
+      <td>The window broke by the wind.</td>
+      <td><span class="ws-trap">⚠️ TRAP</span></td>
+      <td>Passive needs "was broken"</td>
+    </tr>
+    <tr class="anim-up delay-4">
+      <td>Everyone is here, <em>aren't they?</em></td>
+      <td><span class="ws-safe">✅ SAFE</span></td>
+      <td>"Everyone" takes plural tag</td>
+    </tr>
+    <tr class="anim-up delay-5">
+      <td>She didn't go, <em>did she?</em></td>
+      <td><span class="ws-safe">✅ SAFE</span></td>
+      <td>Negative → positive tag ✓</td>
+    </tr>
+    <tr class="anim-up delay-6">
+      <td>The letter was written the teacher.</td>
+      <td><span class="ws-trap">⚠️ TRAP</span></td>
+      <td>Missing "by the teacher"</td>
+    </tr>
+  </table>
+  <div class="teacher-tip anim-up delay-7">
+    <strong>🎙️ Teacher strategy:</strong> Walk around silently. When a student asks "Is this right?" — reply: <em>"Is there a 'by' for passive?"</em> or <em>"What's the plural of 'everyone' in a tag?"</em>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 7 — BOSS BATTLE         -->
+<!-- ============================= -->
+<div class="slide bg-red" id="s7">
+  <div class="section-tag anim-up">🎮 Beat The Boss</div>
+  <div class="slide-title anim-up delay-1">Final Boss Challenge 💀</div>
+
+  <div class="health-bar-container anim-up delay-1">
+    <div class="health-bar-label">
+      <span>🎮 EXAMINER HP</span>
+      <span id="hpText">100%</span>
+    </div>
+    <div class="health-bar-track">
+      <div class="health-bar-fill" id="healthFill" style="width:100%"></div>
+    </div>
+  </div>
+
+  <div class="boss-sentence anim-up delay-2">
+    "The information <span class="error">were</span> given to the students by the teacher, wasn't it?"
+  </div>
+
+  <div class="timer-ring-container anim-bounce delay-3">
+    <svg class="timer-svg" width="90" height="90" viewBox="0 0 100 100">
+      <circle class="timer-bg" cx="50" cy="50" r="45"/>
+      <circle class="timer-circle" id="timerCircle" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="timer-number" id="timerNum">30</div>
+  </div>
+  <p class="anim-up delay-3" style="font-size:13px;color:var(--gray);margin-bottom:12px">Find the <span style="color:var(--coral);font-weight:900">TWO errors</span> in 30 seconds!</p>
+
+  <div class="error-cards" id="errorCards">
+    <div class="error-reveal" id="err1">
+      <div class="error-reveal-title">Error #1 🔴</div>
+      <div class="error-reveal-text"><span style="color:var(--coral)">"were"</span> → should be <span style="color:var(--green)">"was"</span><br><span style="font-size:12px;opacity:0.7">"Information" is uncountable = singular → was given</span></div>
+    </div>
+    <div class="error-reveal" id="err2">
+      <div class="error-reveal-title">Error #2 🟡</div>
+      <div class="error-reveal-text"><span style="color:var(--gold)">"wasn't it?"</span> → Actually <span style="color:var(--green)">CORRECT</span>! ✅<br><span style="font-size:12px;opacity:0.7">Students lose marks trying to change what's already right</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- SLIDE 8 — FINAL CLOSE         -->
+<!-- ============================= -->
+<div class="slide" id="s8">
+  <div class="big-emoji anim-bounce">😎</div>
+  <div class="section-tag anim-up delay-1" style="text-align:center;color:var(--gold)">🎙️ Teacher's Final Words</div>
+  <div class="close-quote anim-up delay-2">
+    "You didn't just learn English today.<br>
+    You learned how to <span class="highlight-gold">see through</span> the smoke and mirrors."
+  </div>
+  <div class="close-quote anim-up delay-3" style="font-size:clamp(16px,2.2vw,22px);margin-top:14px;opacity:0.75">
+    "When you sit that exam — <span class="highlight-coral">smile</span> when you see a trap.<br>Because <span class="highlight-green">you're the one who's going to beat it.</span>"
+  </div>
+  <div class="mindset-equation anim-up delay-4">
+    <div class="eq-box">Formula 📐</div>
+    <span class="eq-op">+</span>
+    <div class="eq-box">Focus 🎯</div>
+    <span class="eq-op">+</span>
+    <div class="eq-box">Confidence 💪</div>
+    <span class="eq-op">=</span>
+    <div class="eq-box" style="background:rgba(255,214,0,0.15);border:1px solid rgba(255,214,0,0.4)">
+      <span class="eq-result">TRAP HUNTER 🛡️</span>
+    </div>
+  </div>
+  <p class="anim-up delay-5" style="font-size:18px;font-weight:800;color:var(--green);margin-top:16px;text-align:center">Class dismissed. Go beat it. 🚀</p>
+</div>
+
+<!-- ============================= -->
+<!-- NAVIGATION                    -->
+<!-- ============================= -->
+<div class="nav">
+  <button id="prevBtn" onclick="changeSlide(-1)" disabled>← Prev</button>
+  <span id="slideCounter">1 / 8</span>
+  <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+</div>
+
+<script>
+  const totalSlides = 8;
+  let current = 1;
+  let timerInterval = null;
+  let timerSeconds = 30;
+  let timerStarted = false;
+
+  function changeSlide(dir) {
+    // Stop timer if leaving boss slide
+    if (current === 7) stopTimer();
+
+    document.getElementById('s' + current).classList.remove('active');
+    current += dir;
+    current = Math.max(1, Math.min(totalSlides, current));
+    document.getElementById('s' + current).classList.add('active');
+    updateUI();
+    triggerAnimations(current);
+
+    // Start boss timer when entering slide 7
+    if (current === 7) initBoss();
+  }
+
+  function triggerAnimations(n) {
+    const slide = document.getElementById('s' + n);
+    const els = slide.querySelectorAll('.anim-up,.anim-bounce,.anim-left,.anim-right,.anim-fade,.anim-slam,.p-step,.error-reveal,.ws-table tr');
+    els.forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = '';
+    });
+  }
+
+  function updateUI() {
+    document.getElementById('slideCounter').textContent = current + ' / ' + totalSlides;
+    document.getElementById('prevBtn').disabled = current === 1;
+    document.getElementById('nextBtn').disabled = current === totalSlides;
+    document.getElementById('progressBar').style.width = ((current / totalSlides) * 100) + '%';
+    document.getElementById('slideLabel').textContent = 'SLIDE ' + String(current).padStart(2,'0') + ' / ' + totalSlides;
+  }
+
+  function initBoss() {
+    timerSeconds = 30;
+    timerStarted = false;
+    document.getElementById('timerNum').textContent = '30';
+    document.getElementById('timerCircle').style.strokeDashoffset = '0';
+    document.getElementById('healthFill').style.width = '100%';
+    document.getElementById('hpText').textContent = '100%';
+    document.getElementById('err1').style.opacity = '0';
+    document.getElementById('err2').style.opacity = '0';
+
+    // Start timer after 1s
+    setTimeout(() => {
+      timerStarted = true;
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        document.getElementById('timerNum').textContent = timerSeconds;
+        const offset = 283 * (1 - timerSeconds / 30);
+        document.getElementById('timerCircle').style.strokeDashoffset = offset;
+        const hpPct = Math.max(20, Math.round((timerSeconds / 30) * 100));
+        document.getElementById('healthFill').style.width = hpPct + '%';
+        document.getElementById('hpText').textContent = hpPct + '%';
+
+        if (timerSeconds <= 0) {
+          stopTimer();
+          revealAnswers();
+        }
+      }, 1000);
+    }, 1500);
+  }
+
+  function stopTimer() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  }
+
+  function revealAnswers() {
+    document.getElementById('timerNum').textContent = '⏰';
+    document.getElementById('timerCircle').style.stroke = '#00E676';
+    document.getElementById('healthFill').style.background = 'linear-gradient(90deg, #00E676, #42A5F5)';
+    document.getElementById('hpText').textContent = '0%';
+    document.getElementById('healthFill').style.width = '0%';
+
+    setTimeout(() => {
+      const e1 = document.getElementById('err1');
+      e1.style.opacity = '1';
+      e1.style.animation = 'fadeUp 0.5s ease forwards';
+    }, 300);
+    setTimeout(() => {
+      const e2 = document.getElementById('err2');
+      e2.style.opacity = '1';
+      e2.style.animation = 'fadeUp 0.5s ease forwards';
+    }, 800);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      if (current < totalSlides) changeSlide(1);
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      if (current > 1) changeSlide(-1);
+    }
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
