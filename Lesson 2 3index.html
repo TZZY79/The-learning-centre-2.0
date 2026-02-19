@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6 Lesson 3: Choosing Your Own Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #be185d;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .tab-btn.active {
+            background: #be185d;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(190, 24, 93, 0.3);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .slide-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        
+        .slide {
+            display: none;
+            padding: 60px;
+            min-height: 500px;
+            color: white;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slide h2 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .student-box {
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+        
+        .student-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .student-box ul {
+            margin-left: 30px;
+        }
+        
+        .student-box li {
+            margin: 10px 0;
+        }
+        
+        .slide-nav {
+            background: #f7fafc;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .slide-nav button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            background: #be185d;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slide-nav button:hover:not(:disabled) {
+            background: #9d174d;
+            transform: translateY(-2px);
+        }
+        
+        .slide-nav button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .worksheet {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .worksheet h2 {
+            color: #be185d;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        
+        .worksheet h3 {
+            color: #db2777;
+            font-size: 1.5em;
+            margin: 30px 0 20px 0;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .question input[type="text"],
+        .question textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border 0.3s;
+            font-family: inherit;
+        }
+
+        .question textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .question input[type="text"]:focus,
+        .question textarea:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            cursor: pointer;
+            margin: 0 !important;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .radio-group label:hover {
+            background: #fff1f2;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .crossword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .crossword-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .crossword-num {
+            font-weight: bold;
+            font-size: 1.2em;
+            width: 30px;
+        }
+        
+        .crossword-word {
+            font-weight: 600;
+            width: 120px;
+            color: #4a5568;
+        }
+        
+        .crossword-item input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+        
+        .submit-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        
+        .submit-section h2 {
+            color: #be185d;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        
+        .name-input {
+            margin-bottom: 30px;
+        }
+        
+        .name-input label {
+            display: block;
+            font-size: 1.2em; font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .name-input input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2em;
+            border: 2px solid #fbcfe8;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(180, 18, 93, 0.05);
+        }
+        
+        .name-input input:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        
+        .status-message {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .status-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: flex;
+        }
+        
+        .status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: flex;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .submit-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-save { background: #059669; }
+        .btn-email { background: #2563eb; }
+        .btn-telegram { background: #06b6d4; }
+        .btn-copy { background: #be185d; }
+        
+        .info-box {
+            padding: 20px;
+            background: #fdf2f8;
+            border-left: 4px solid #be185d;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .info-box p {
+            color: #9d174d;
+            margin: 5px 0;
+        }
+        
+        .info-box .title {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .speaking-section {
+            background: #fff1f2;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #be185d;
+        }
+
+        .speaking-section h4 {
+            color: #9d174d;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+                min-height: 400px;
+            }
+            
+            .slide h2 {
+                font-size: 2em;
+            }
+            
+            .student-box {
+                font-size: 1em;
+                padding: 20px;
+            }
+            
+            .worksheet, .submit-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Unit 6 Lesson 3: Choosing Your Own Style</h1>
+            <p>Salon, Spa & Decision Clauses</p>
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('slides')">📽️ Slides</button>
+                <button class="tab-btn" onclick="switchTab('worksheet1')">📝 Worksheet</button>
+                <button class="tab-btn" onclick="switchTab('speaking')">💬 Speaking</button>
+                <button class="tab-btn" onclick="switchTab('crossword')">🧩 Crossword</button>
+            </div>
+        </div>
+
+        <!-- SLIDES SECTION -->
+        <div id="slides" class="content-section active">
+            <div class="slide-container">
+                <div class="slide active" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
+                    <h2>Lesson 3: Choosing Your Own Style</h2>
+                    <div class="student-box" style="background: rgba(255, 255, 255, 0.95); color: #6b21a8; border-color: #be185d;">
+                        <h3>📚 Students Read:</h3>
+                        <p style="font-size: 1.2em; margin-bottom: 15px;">Today we will learn about salon visits and if/whether clauses.</p>
+                        <ul>
+                            <li>Speak only English.</li>
+                            <li>Discuss your favorite hairstyles.</li>
+                            <li>Learn how to ask about spa services.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="slide" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);">
+                    <h2>Vocabulary: Salon & Spa</h2>
+                    <div class="student-box" style="background: white; color: #9d174d; border-color: #be185d;">
+                        <h3>📚 Students Read:</h3>
+                        <ul style="list-style: none; margin-left: 0;">
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">To get a trim</strong> - to cut only the ends of the hair.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">Highlights</strong> - coloring small sections of hair lighter.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">A Facial</strong> - a deep treatment for your face skin.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">Manicure/Pedicure</strong> - cleaning and styling your nails.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="slide" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <h2>Interesting Hairstyles</h2>
+                    <div class="student-box" style="background: white; color: #065f46; border-color: #10b981;">
+                        <h3>📚 Students Read:</h3>
+                        <ul style="list-style: none; margin-left: 0;">
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">A Bob</strong> - hair cut straight around the jawline.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">A Buzz Cut</strong> - very short hair cut with clippers.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">Bangs (Fringe)</strong> - hair covering the forehead.</li>
+                            <li style="margin: 15px 0;"><strong style="font-size: 1.2em;">Layers</strong> - hair cut at different lengths.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="slide" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <h2>Grammar: If & Whether</h2>
+                    <div class="student-box" style="background: white; color: #92400e; border-color: #f59e0b;">
+                        <h3>📚 Students Read:</h3>
+                        <p style="font-size: 1.3em; margin: 20px 0;">We use <strong>if</strong> and <strong>whether</strong> to talk about choices or "yes/no" ideas inside a sentence.</p>
+                        <p style="font-size: 1.3em; margin: 20px 0;">"I don't know <strong>if</strong> I want a trim."</p>
+                        <p style="font-size: 1.3em; margin: 20px 0;">"She's deciding <strong>whether</strong> to get highlights or not."</p>
+                    </div>
+                </div>
+
+                <div class="slide" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                    <h2>Whether vs If</h2>
+                    <div class="student-box" style="background: white; color: #1e40af; border-color: #3b82f6;">
+                        <h3>📚 Students Read:</h3>
+                        <p style="font-size: 1.2em;">1. They are mostly the same!</p>
+                        <p style="font-size: 1.2em;">2. <strong>Whether</strong> is more formal.</p>
+                        <p style="font-size: 1.2em;">3. Use <strong>Whether</strong> before "or not".</p>
+                        <p style="font-size: 1.2em; margin-top: 15px;">"I don't know <strong>whether or not</strong> layers look good on me."</p>
+                    </div>
+                </div>
+
+                <div class="slide-nav">
+                    <button id="prevBtn" onclick="changeSlide(-1)">◀ Previous</button>
+                    <span class="slide-counter">Slide <span id="slideNum">1</span> / <span id="totalSlides">5</span></span>
+                    <button id="nextBtn" onclick="changeSlide(1)">Next ▶</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WORKSHEET SECTION -->
+        <div id="worksheet1" class="content-section">
+            <div class="worksheet">
+                <h2>📝 Worksheet: Personal Style</h2>
+                
+                <h3>Part A: Listening / Identification</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="listen1" value="trim"> Trim</label>
+                    <label><input type="checkbox" name="listen1" value="facial"> Facial</label>
+                    <label><input type="checkbox" name="listen1" value="bob"> Bob</label>
+                </div>
+
+                <h3>Part B: grammar Check</h3>
+                <div id="multipleChoice"></div>
+
+                <h3>Part C: Using If/Whether</h3>
+                <div id="transform"></div>
+
+                <h3>Part D: Personal Questions</h3>
+                <div id="personalQuestions"></div>
+            </div>
+        </div>
+
+        <!-- SPEAKING SECTION -->
+        <div id="speaking" class="content-section">
+            <div class="worksheet">
+                <h2>💬 Speaking: The Stylist</h2>
+                <div class="speaking-section">
+                    <h4>🗣️ Role Play Scenario</h4>
+                    <p>You are at the salon. Ask the stylist whether they can give you a buzz cut. Use 'if' to ask about the price.</p>
+                    <textarea id="roleplay" placeholder="Write your dialogue..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- CROSSWORD SECTION -->
+        <div id="crossword" class="content-section">
+            <div class="worksheet">
+                <h2>🧩 Crossword Prep</h2>
+                <div class="crossword-grid" id="crosswordGrid"></div>
+            </div>
+        </div>
+
+        <!-- SUBMIT SECTION -->
+        <div class="submit-section">
+            <h2>📤 Submit Your Lesson</h2>
+            
+            <div class="name-input">
+                <label>👤 Your Full Name: <span style="color: #dc2626;">*</span></label>
+                <input type="text" id="studentName" placeholder="Enter your full name here...">
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <div class="button-grid">
+                <button class="submit-btn btn-save" onclick="saveToPhone()">💾 Save to Phone</button>
+                <button class="submit-btn btn-email" onclick="submitViaEmail()">📧 Submit via Email</button>
+                <button class="submit-btn btn-telegram" onclick="submitViaTelegram()">✈️ Submit via Telegram</button>
+                <button class="submit-btn btn-copy" onclick="copyAllAnswers()">📋 Copy Answers</button>
+            </div>
+
+            <div class="info-box">
+                <p class="title">💡 Ready to submit?</p>
+                <p>Use the buttons above to send your work to the teacher securely.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        const multipleChoiceQuestions = [
+            { q: "I'm not sure ___ she wants highlights.", options: ["if", "that", "why"], answer: "if" },
+            { q: "She asked ___ or not the salon was open.", options: ["whether", "if", "when"], answer: "whether" },
+            { q: "We need to decide ___ to get a buzz cut.", options: ["whether", "if", "both are okay"], answer: "both are okay" }
+        ];
+
+        const transformStatements = [
+            "Does he like bangs?",
+            "Is the facial expensive?",
+            "Can I get a manicure now?"
+        ];
+
+        const crosswordWords = ['trim', 'highlights', 'facial', 'manicure', 'bob', 'buzzcut', 'bangs', 'layers', 'salon', 'spa'];
+
+        // Generation
+        function init() {
+            const mc = document.getElementById('multipleChoice');
+            multipleChoiceQuestions.forEach((q, i) => {
+                let opts = '';
+                q.options.forEach(o => opts += `<label><input type="radio" name="mc${i}" value="${o}"> ${o}</label>`);
+                mc.innerHTML += `<div class="question"><label>${i+1}. ${q.q}</label><div class="radio-group">${opts}</div></div>`;
+            });
+
+            const trans = document.getElementById('transform');
+            transformStatements.forEach((s, i) => {
+                trans.innerHTML += `<div class="question"><label>${i+1}. Rewrite: "${s}" -> I wonder...</label><input type="text" id="t${i}"></div>`;
+            });
+
+            const cw = document.getElementById('crosswordGrid');
+            crosswordWords.forEach((word, i) => {
+                cw.innerHTML += `<div class="crossword-item"><span class="crossword-num">${i+1}.</span><span class="crossword-word">${word}</span><input type="text" id="cw${i}"></div>`;
+            });
+        }
+
+        function switchTab(t) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(t).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function changeSlide(d) {
+            const slides = document.querySelectorAll('.slide');
+            slides[currentSlide].classList.remove('active');
+            currentSlide = Math.max(0, Math.min(totalSlides - 1, currentSlide + d));
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNum').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function collect() {
+            const name = document.getElementById('studentName').value;
+            if(!name) { alert("Name required!"); return null; }
+            let res = `STUDENT NAME: ${name}\nUnit 6 Lesson 3\n\n`;
+            res += "Multiple Choice:\n";
+            multipleChoiceQuestions.forEach((q, i) => {
+                const sel = document.querySelector(`input[name="mc${i}"]:checked`);
+                res += `${i+1}: ${sel ? sel.value : 'N/A'}\n`;
+            });
+            return res;
+        }
+
+        function saveToPhone() {
+            const blob = new Blob([collect()], {type:'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Lesson3_${document.getElementById('studentName').value}.txt`;
+            a.click();
+        }
+
+        function submitViaEmail() {
+            const url = `mailto:ttakatitty@gmail.com?subject=Lesson3&body=${encodeURIComponent(collect())}`;
+            window.location.href = url;
+        }
+
+        function submitViaTelegram() {
+            const msg = `Lesson 3 submission from ${document.getElementById('studentName').value}`;
+            window.open(`https://t.me/+85595325326?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function copyAllAnswers() {
+            navigator.clipboard.writeText(collect());
+            alert("Copied!");
+        }
+
+        init();
+    </script>
+</body>
+</html>
